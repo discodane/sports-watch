@@ -26,7 +26,49 @@ const shows = [
     id: 'UCIv0wH_CdWgttwX6B-Cyt8w',
     type: "channel",
   },
-]
+];
+
+const fakeUsers = [
+  {
+    username: "disco",
+    shows: [
+      "Dan Patrick Show",
+      "First Things First",
+    ]
+  }
+];
+
+getShowMapping = (theseShows) => {
+  const returnStuff = [];
+  shows.forEach((show) => {
+    theseShows.forEach((innerShow) => {
+      if(innerShow === show.name) {
+        returnStuff.push(show);
+      }
+    })
+  });
+  return returnStuff;
+}
+
+async function lander(auth, username) {
+  let shows = [];
+  let returnableIds = [];
+  fakeUsers.forEach((user) => {
+    if(user.username === username) {
+      shows = getShowMapping(user.shows);
+    }
+  });
+
+  console.log({shows});
+  for(let i = 0; i < shows.length; i++) {
+    const ids = await getUploadPlaylistId(auth, shows[i]);
+    console.log('yeah', ids);
+    returnableIds = returnableIds.concat(ids);
+    console.log('2', returnableIds);
+  };
+  console.log({returnableIds});
+  return returnableIds;
+}
 
 async function getUploadPlaylistId(auth, show) {
   var service = google.youtube('v3');
@@ -54,7 +96,6 @@ async function getUploadPlaylistId(auth, show) {
 }
 
 async function getVideoIds(auth, uploadsPlayListId) {
-  console.log({uploadsPlayListId});
   var service = google.youtube('v3');
   try {
     const response = await service.playlistItems.list({
@@ -82,6 +123,6 @@ listUpIds = (playlist) => {
 }
 
 module.exports = {
-  getUploadPlaylistId: getUploadPlaylistId,
+  getStarted: lander,
   shows: shows,
 }

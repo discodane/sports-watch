@@ -16,8 +16,7 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
 
 app.get('/', async (req, res) => {
-  const result = await querier.getUploadPlaylistId(oauth2Client, querier.shows[0]);
-  console.log({result});
+  const result = await querier.getStarted(oauth2Client, "disco");
   res.send(result);
 })
 
