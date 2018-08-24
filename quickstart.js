@@ -58,15 +58,10 @@ async function lander(auth, username) {
       shows = getShowMapping(user.shows);
     }
   });
-
-  console.log({shows});
+  
   for(let i = 0; i < shows.length; i++) {
-    const ids = await getUploadPlaylistId(auth, shows[i]);
-    console.log('yeah', ids);
-    returnableIds = returnableIds.concat(ids);
-    console.log('2', returnableIds);
+    returnableIds = returnableIds.concat(await getUploadPlaylistId(auth, shows[i]));
   };
-  console.log({returnableIds});
   return returnableIds;
 }
 
