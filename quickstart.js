@@ -58,10 +58,15 @@ async function lander(auth, username) {
       shows = getShowMapping(user.shows);
     }
   });
-  
+
   for(let i = 0; i < shows.length; i++) {
     returnableIds = returnableIds.concat(await getUploadPlaylistId(auth, shows[i]));
   };
+
+  for (let i = returnableIds.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [returnableIds[i], returnableIds[j]] = [returnableIds[j], returnableIds[i]];
+  }
   return returnableIds;
 }
 
@@ -96,7 +101,7 @@ async function getVideoIds(auth, uploadsPlayListId) {
     const response = await service.playlistItems.list({
       auth: auth,
       part: 'contentDetails',
-      maxResults: '20',
+      maxResults: '10',
       playlistId: uploadsPlayListId
     });
     return listUpIds(response.data.items);

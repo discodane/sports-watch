@@ -6,7 +6,10 @@ var fs = require('fs');
 var readline = require('readline');
 var {google} = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
+var cors = require('cors');
 let oauth2Client;
+
+app.use(cors());
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/youtube-nodejs-quickstart.json
