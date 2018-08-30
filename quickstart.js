@@ -1,4 +1,4 @@
-var {google} = require('googleapis');
+const cacher = require('./cacher');
 
 const shows = [
   {
@@ -50,76 +50,26 @@ getShowMapping = (theseShows) => {
   return returnStuff;
 }
 
-async function lander(auth, username) {
+async function lander(username) {
   let shows = [];
   let returnableIds = [];
   fakeUsers.forEach((user) => {
     if(user.username === username) {
-      shows = getShowMapping(user.shows);
+      console.log({user})
+      shows = user.shows;
     }
   });
-
   for(let i = 0; i < shows.length; i++) {
-    returnableIds = returnableIds.concat(await getUploadPlaylistId(auth, shows[i]));
-  };
+    returnableIds = returnableIds.concat(cacher.getShow(shows[i]));
+    console.log({returnableIds});
+  }
 
   for (let i = returnableIds.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [returnableIds[i], returnableIds[j]] = [returnableIds[j], returnableIds[i]];
   }
+  console.log({returnableIds});
   return returnableIds;
-}
-
-async function getUploadPlaylistId(auth, show) {
-  var service = google.youtube('v3');
-  const params = show.type === "channel" ? {
-    auth: auth,
-    part: "contentDetails",
-    id: show.id,
-  } :
-  {
-    auth: auth,
-    part: "contentDetails",
-    forUsername: show.id,
-  }
-  try {
-    const response = await service.channels.list(params);
-    var contentDetails = response.data.items;
-    if(contentDetails.length == 0) {
-      console.log('No channel found.');
-    } else {
-      return await getVideoIds(auth, contentDetails[0].contentDetails.relatedPlaylists.uploads);
-    }
-  } catch(err) {
-    console.log('The API returned an error: ' + err);
-  }
-}
-
-async function getVideoIds(auth, uploadsPlayListId) {
-  var service = google.youtube('v3');
-  try {
-    const response = await service.playlistItems.list({
-      auth: auth,
-      part: 'contentDetails',
-      maxResults: '10',
-      playlistId: uploadsPlayListId
-    });
-    return listUpIds(response.data.items);
-  } catch(err) {
-    console.log('The API returned an error: ' + err);
-  }
-
-}
-
-listUpIds = (playlist) => {
-  const returnList = [];
-  playlist.forEach((item) => {
-    returnList.push({
-      id: item.contentDetails.videoId,
-      date: item.contentDetails.videoPublishedAt,
-    })
-  });
-  return returnList;
 }
 
 module.exports = {
