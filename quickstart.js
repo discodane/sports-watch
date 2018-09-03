@@ -55,20 +55,17 @@ async function lander(username) {
   let returnableIds = [];
   fakeUsers.forEach((user) => {
     if(user.username === username) {
-      console.log({user})
       shows = user.shows;
     }
   });
   for(let i = 0; i < shows.length; i++) {
     returnableIds = returnableIds.concat(cacher.getShow(shows[i]));
-    console.log({returnableIds});
   }
 
   for (let i = returnableIds.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [returnableIds[i], returnableIds[j]] = [returnableIds[j], returnableIds[i]];
   }
-  console.log({returnableIds});
   return returnableIds;
 }
 
