@@ -3,7 +3,6 @@ const app = express();
 const querier = require('./quickstart');
 
 var cors = require('cors');
-let oauth2Client;
 
 app.use(cors());
 
